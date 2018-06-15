@@ -56,18 +56,22 @@ function init() {
                      entries = result.feed.entries,
                      entriesLen = entries.length,
                      entryTemplate = Handlebars.compile($('.tpl-entry').html());
-
-                 title.html(feedName);   // Set the header text
+                if(title && feedName){ //Error handling on variables
+                 title.html(feedName);// Set the header text
+                   }
+                if(container){   
                  container.empty();      // Empty out all previous entries
-
+                }  
                  /* Loop through the entries we just loaded via the Google
                   * Feed Reader API. We'll then parse that entry against the
                   * entryTemplate (created above using Handlebars) and append
                   * the resulting HTML to the list of entries on the page.
                   */
+                  if(entries){
                  entries.forEach(function(entry) {
                      container.append(entryTemplate(entry));
                  });
+                    }
 
                  if (cb) {
                      cb();
@@ -105,29 +109,38 @@ $(function() {
      * above using Handlebars) and append it to the list of all
      * available feeds within the menu.
      */
+    if(allFeeds){
     allFeeds.forEach(function(feed) {
         feed.id = feedId;
         feedList.append(feedItemTemplate(feed));
 
         feedId++;
     });
+    }
 
     /* When a link in our feedList is clicked on, we want to hide
      * the menu, load the feed, and prevent the default action
      * (following the link) from occurring.
      */
+    if(feedList){
     feedList.on('click', 'a', function() {
         var item = $(this);
 
         $('body').addClass('menu-hidden');
+        if(window.loadFeed){
         loadFeed(item.data('id'));
         return false;
+        }
     });
+    }
 
     /* When the menu icon is clicked on, we need to toggle a class
      * on the body to perform the hiding/showing of our menu.
      */
+    if(menuIcon){
     menuIcon.on('click', function() {
         $('body').toggleClass('menu-hidden');
     });
+    }      
+
 }());
