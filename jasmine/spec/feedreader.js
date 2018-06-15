@@ -85,16 +85,26 @@ $(function() {
         });
     });
     /* TODO: Write a new test suite named "Initial Entries" */
-    decsribe('Initial Entries',function(){
-
-    
+    describe('Initial Entries',function(){
         /* TODO: Write a test that ensures when the loadFeed
          * function is called and completes its work, there is at least
          * a single .entry element within the .feed container.
          * Remember, loadFeed() is asynchronous so this test will require
          * the use of Jasmine's beforeEach and asynchronous done() function.
-         */
-
+         */ 
+        var entries = 0;
+        beforeEach(done => {
+            loadFeed(0,done);
+            entries = $('entry-link').length;
+        });
+        it('loadFeed loads at least one resource',function(done){
+           expect(entries).not.toBe(0);
+           done()
+        });
+    });
+        //I had implemented the same function but insted I was calling done()
+        //Looked it up in the knowledge platform and there was an accepted answer that I used 
+        
 
     /* TODO: Write a new test suite named "New Feed Selection" */
 
@@ -102,5 +112,22 @@ $(function() {
          * by the loadFeed function that the content actually changes.
          * Remember, loadFeed() is asynchronous.
          */
+
+    describe('New Feed Selection', () => {
+        beforeEach(done => {
+          loadFeed(1, () => { 
+            window.first = document.querySelector('.entry-link').innerHTML;
+            loadFeed(2, () => {
+              window.second = document.querySelector('.entry-link').innerHTML;
+              done();
+            });
+          });
+        });
+        it('loads new feed ',function(done){
+            expect(second !== first).toBe(true);
+            done();
+        })
     });
+    //Knowledge platform helped about the syntax
+
 }());
